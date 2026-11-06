@@ -1,0 +1,5 @@
+version,impl,records,respond,discard,leaking_records,simulated_bytes_echoed,max_leak,simulated_header_reads,echoed_padding_records
+1.0.1f,dtls,5590,5504,0,3551,8972661,65535,258,2875
+1.0.1f,tls,5590,5504,0,3551,8972661,65535,258,2875
+1.0.1g,dtls,5590,1081,4509,0,0,0,0,0
+1.0.1g,tls,5590,1081,4509,0,0,0,0,0

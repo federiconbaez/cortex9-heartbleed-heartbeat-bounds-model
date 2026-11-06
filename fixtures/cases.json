@@ -1,0 +1,21 @@
+{
+  "note": "Expectations derived by hand from the C text of tls1_process_heartbeat/dtls1_process_heartbeat (0d7717fc and 96db9023), before running the model. rec = [type, len_hi, len_lo] + body. 'leak' = bytes echoed from beyond rrec.data[0..rrec.length), computed by hand as max(0, payload - (rrec.length - 3)) for request records with rrec.length >= 3.",
+  "cases": [
+    {"id": "normal-hello", "type": 1, "field": 5, "body_len": 21, "why": "5 payload + 16 padding, rrec.length 24",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 0}, "1.0.1g": {"action": "RESPOND", "leak": 0}}},
+    {"id": "classic-ffff-empty", "type": 1, "field": 65535, "body_len": 0, "why": "rrec.length 3; 1+2+16 > 3",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 65535}, "1.0.1g": {"action": "DISCARD", "leak": 0}}},
+    {"id": "min-valid", "type": 1, "field": 0, "body_len": 16, "why": "rrec.length 19; 19 > 19 is false",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 0}, "1.0.1g": {"action": "RESPOND", "leak": 0}}},
+    {"id": "echo-own-padding", "type": 1, "field": 2, "body_len": 17, "why": "rrec.length 20; 21 > 20 discards in g; f echoes 2 bytes inside the record (padding), no leak",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 0}, "1.0.1g": {"action": "DISCARD", "leak": 0}}},
+    {"id": "one-past", "type": 1, "field": 17, "body_len": 16, "why": "rrec.length 19; payload 17 reads 16 in-record + 1 beyond",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 1}, "1.0.1g": {"action": "DISCARD", "leak": 0}}},
+    {"id": "response-type", "type": 2, "field": 0, "body_len": 16, "why": "TLS1_HB_RESPONSE: only a sequence check, nothing echoed",
+     "expect": {"1.0.1f": {"action": "NO_RESPONSE", "leak": 0}, "1.0.1g": {"action": "NO_RESPONSE", "leak": 0}}},
+    {"id": "big-claimed-small-body", "type": 1, "field": 16384, "body_len": 100, "why": "rrec.length 103; 16384 - 100 = 16284 beyond",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 16284}, "1.0.1g": {"action": "DISCARD", "leak": 0}}},
+    {"id": "max-record-dtls-ok", "type": 1, "field": 16365, "body_len": 16381, "impl": "dtls", "why": "rrec.length 16384; write_length 3+16365+16 = 16384, not > 16384",
+     "expect": {"1.0.1f": {"action": "RESPOND", "leak": 0}, "1.0.1g": {"action": "RESPOND", "leak": 0}}}
+  ]
+}

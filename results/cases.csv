@@ -1,0 +1,31 @@
+id,impl,version,rrec_length,payload,action,reason,leak
+normal-hello,tls,1.0.1f,24,5,RESPOND,,0
+normal-hello,tls,1.0.1g,24,5,RESPOND,,0
+normal-hello,dtls,1.0.1f,24,5,RESPOND,,0
+normal-hello,dtls,1.0.1g,24,5,RESPOND,,0
+classic-ffff-empty,tls,1.0.1f,3,65535,RESPOND,,65535
+classic-ffff-empty,tls,1.0.1g,3,,DISCARD,1 + 2 + 16 > rrec.length,0
+classic-ffff-empty,dtls,1.0.1f,3,65535,RESPOND,,65535
+classic-ffff-empty,dtls,1.0.1g,3,,DISCARD,1 + 2 + 16 > rrec.length,0
+min-valid,tls,1.0.1f,19,0,RESPOND,,0
+min-valid,tls,1.0.1g,19,0,RESPOND,,0
+min-valid,dtls,1.0.1f,19,0,RESPOND,,0
+min-valid,dtls,1.0.1g,19,0,RESPOND,,0
+echo-own-padding,tls,1.0.1f,20,2,RESPOND,,0
+echo-own-padding,tls,1.0.1g,20,2,DISCARD,1 + 2 + payload + 16 > rrec.length,0
+echo-own-padding,dtls,1.0.1f,20,2,RESPOND,,0
+echo-own-padding,dtls,1.0.1g,20,2,DISCARD,1 + 2 + payload + 16 > rrec.length,0
+one-past,tls,1.0.1f,19,17,RESPOND,,1
+one-past,tls,1.0.1g,19,17,DISCARD,1 + 2 + payload + 16 > rrec.length,0
+one-past,dtls,1.0.1f,19,17,RESPOND,,1
+one-past,dtls,1.0.1g,19,17,DISCARD,1 + 2 + payload + 16 > rrec.length,0
+response-type,tls,1.0.1f,19,0,NO_RESPONSE,response: sequence check only,0
+response-type,tls,1.0.1g,19,0,NO_RESPONSE,response: sequence check only,0
+response-type,dtls,1.0.1f,19,0,NO_RESPONSE,response: sequence check only,0
+response-type,dtls,1.0.1g,19,0,NO_RESPONSE,response: sequence check only,0
+big-claimed-small-body,tls,1.0.1f,103,16384,RESPOND,,16284
+big-claimed-small-body,tls,1.0.1g,103,16384,DISCARD,1 + 2 + payload + 16 > rrec.length,0
+big-claimed-small-body,dtls,1.0.1f,103,16384,RESPOND,,16284
+big-claimed-small-body,dtls,1.0.1g,103,16384,DISCARD,1 + 2 + payload + 16 > rrec.length,0
+max-record-dtls-ok,dtls,1.0.1f,16384,16365,RESPOND,,0
+max-record-dtls-ok,dtls,1.0.1g,16384,16365,RESPOND,,0
